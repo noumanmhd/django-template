@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq:rw
+
+  backend:
+    image: django_template
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - mediafiles:/app/media:rw
+      - staticfiles:/app/staticfiles:rw
+      - ./db.sqlite3:/app/db.sqlite3:rw
+    entrypoint: /app/scripts/entrypoint.sh
+    restart: always
+    depends_on:
+      - redis
+      - rabbitmq
+
+  celery-worker:
+    image: django_template
+    env_file:
+      - .env
+    volumes:
+      - mediafiles:/app/media:rw
+      - staticfiles:/app/staticfiles:rw
+      - ./db.sqlite3:/app/db.sqlite3:rw
+    entrypoint: /app/scripts/celery-worker.sh
+    restart: always
+    depends_on:
+      - backend
+
+  celery-beat:
+    image: django_template
+    env_file:
+      - .env
+    volumes:
+      - mediafiles:/app/media:rw
+      - staticfiles:/app/staticfiles:rw
+      - ./db.sqlite3:/app/db.sqlite3:rw
+    entrypoint: /app/scripts/celery-beat.sh
+    restart: always
+    depends_on:
+      - backend
+
+  celery-flower:
+    image: django_template
+    env_file:
+      - .env
+    ports:
+      - ${CELERY_FLOWER_PORT}:5555
+    volumes:
+      - mediafiles:/app/media:rw
+      - staticfiles:/app/staticfiles:rw
+      - ./db.sqlite3:/app/db.sqlite3:rw
+    entrypoint: /app/scripts/celery-beat.sh
+    restart: always
+    depends_on:
+      - celery-worker
+
+  ngnix:
+    image: nginx:latest
+    ports:
+      - ${NGINX_PORT}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - staticfiles:/var/www/html/static:ro
+      - mediafiles:/var/www/html/media:ro
+
+    restart: always
+    depends_on:
+      - backend
+
+volumes:
+  staticfiles:
+  mediafiles:
+  rabbitmq:
+

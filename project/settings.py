@@ -144,6 +144,14 @@ DATABASES = {
     }
 }
 
+# Cache Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env('DJANGO_REDIS_URL', default='redis://localhost:6379/1'),
+    }
+}
+
 # Celery Configuration
 CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='amqp://localhost:5672')
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND',
@@ -194,7 +202,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Global static files
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    ("js", BASE_DIR / "static/js"),
+    ("css", BASE_DIR / "static/css"),
 ]
 
 MEDIA_URL = '/media/'
