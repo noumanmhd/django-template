@@ -1,0 +1,23 @@
+**/__pycache__
+**/.venv
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.vscode
+**/.idea
+**/docker-compose*
+**/Dockerfile*
+*.pyc
+*.pyo
+*.mo
+*.db
+*.sqlite3
+*.log
+*.swp
+README.md
+
+# Static files
+static/
+media/*
+staticfiles/*
