@@ -202,8 +202,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Global static files
 STATICFILES_DIRS = [
-    ("js", BASE_DIR / "static/js"),
-    ("css", BASE_DIR / "static/css"),
+    BASE_DIR / "static",
 ]
 
 MEDIA_URL = '/media/'
