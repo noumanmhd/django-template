@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 # Set environment variables for Python to not write pyc files and to buffer stdout and stderr
 ENV PYTHONDONTWRITEBYTECODE 1
