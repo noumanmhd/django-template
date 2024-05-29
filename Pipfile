@@ -28,6 +28,8 @@ pytz = "*"
 uvicorn = "*"
 gunicorn = "*"
 whitenoise = "*"
+dlib = "*"
+setuptools = "*"
 
 [dev-packages]
 autopep8 = "*"
